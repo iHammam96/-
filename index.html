@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="جدولي">
+<meta name="theme-color" content="#0d1117">
+<title>جدولي الأسبوعي</title>
+<style>
+:root {
+  --bg:       #0d1117;
+  --card:     #161b22;
+  --card2:    #1c2128;
+  --border:   #21262d;
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --accent:   #6366f1;
+  --accent2:  #818cf8;
+  --c-sleep:    #475569;
+  --c-prayer:   #22c55e;
+  --c-work:     #3b82f6;
+  --c-quran:    #f59e0b;
+  --c-exercise: #ef4444;
+  --c-study:    #a78bfa;
+  --c-family:   #ec4899;
+  --c-travel:   #06b6d4;
+  --c-nap:      #6366f1;
+  --c-free:     #4b5563;
+  --c-hygiene:  #94a3b8;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+
+body {
+  font-family: -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ─── HEADER ─── */
+.header {
+  background: linear-gradient(160deg,#0f1724 0%,#111827 60%,#0d1117 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 20px 22px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content:'';position:absolute;top:-80px;left:50%;
+  transform:translateX(-50%);width:600px;height:320px;
+  background:radial-gradient(ellipse,rgba(99,102,241,.2) 0%,transparent 65%);
+  pointer-events:none;
+}
+.header h1 {
+  font-size: clamp(1.4rem,5vw,2rem);
+  font-weight: 800; letter-spacing: -.5px;
+  background: linear-gradient(135deg,#818cf8 0%,#c084fc 50%,#f59e0b 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:4px;
+}
+.header .subtitle{font-size:.8rem;color:var(--text2);margin-bottom:16px;}
+
+.poetry {
+  display:inline-block; padding:12px 20px;
+  border:1px solid rgba(129,140,248,.25); border-radius:14px;
+  background:rgba(99,102,241,.07); max-width:500px; width:100%;
+}
+.poetry p{font-size:clamp(.88rem,3.5vw,1.05rem);color:#c4b5fd;line-height:1.9;font-style:italic;}
+.poetry .poet{font-size:.7rem;color:var(--text2);margin-top:5px;}
+
+/* ─── STATUS BAR ─── */
+.status-bar {
+  background:var(--card); border-bottom:1px solid var(--border);
+  padding:10px 16px;
+  display:flex; align-items:center; justify-content:center;
+  gap:10px; flex-wrap:wrap;
+}
+.month-label{font-size:.95rem;font-weight:700;color:var(--accent2);}
+.status-badge{
+  font-size:.72rem; color:var(--text2);
+  background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.2);
+  border-radius:20px; padding:3px 10px;
+}
+
+/* ─── PRAYER BAR ─── */
+.prayer-bar {
+  background:var(--card2); border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex; justify-content:center; flex-wrap:wrap; gap:7px;
+}
+.prayer-pill {
+  display:flex; flex-direction:column; align-items:center;
+  background:rgba(34,197,94,.07); border:1px solid rgba(34,197,94,.18);
+  border-radius:10px; padding:6px 12px; min-width:72px;
+  transition:transform .15s;
+}
+.prayer-pill:hover{transform:translateY(-2px);}
+.prayer-pill .pn{font-size:.68rem;color:#4ade80;font-weight:700;}
+.prayer-pill .pt{font-size:.9rem;font-weight:700;color:var(--text);}
+.prayer-src{font-size:.62rem;color:var(--text2);text-align:center;width:100%;margin-top:4px;}
+
+/* ─── LEGEND ─── */
+.legend {
+  display:flex; flex-wrap:wrap; gap:6px;
+  padding:9px 16px;
+  background:var(--card); border-bottom:1px solid var(--border);
+  justify-content:center;
+}
+.leg{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--text2);}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ─── DAY TABS ─── */
+.day-tabs {
+  display:flex; overflow-x:auto;
+  background:var(--card); border-bottom:1px solid var(--border);
+  padding:0 8px; scrollbar-width:none; gap:0;
+}
+.day-tabs::-webkit-scrollbar{display:none;}
+.day-tab {
+  flex-shrink:0; padding:12px 13px;
+  font-size:.82rem; font-weight:600;
+  color:var(--text2); cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .2s; white-space:nowrap; text-align:center;
+}
+.day-tab:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.day-tab.active{color:var(--accent2);border-bottom-color:var(--accent2);}
+.day-tab .badge{font-size:.58rem;color:var(--text2);display:block;margin-top:1px;}
+
+/* ─── DAY CONTENT ─── */
+.day-content{display:none;padding:16px;max-width:740px;margin:0 auto;animation:fadeIn .22s ease;}
+.day-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ─── TIMELINE ─── */
+.timeline{display:flex;flex-direction:column;}
+.t-item {
+  display:flex; gap:9px; padding:8px 0;
+  border-bottom:1px solid rgba(33,38,45,.9);
+  align-items:flex-start;
+}
+.t-item:last-child{border-bottom:none;}
+.t-dot{
+  width:9px;height:9px;border-radius:50%;
+  flex-shrink:0;margin-top:5px;
+  box-shadow:0 0 5px currentColor;opacity:.9;
+}
+.t-time{
+  font-size:.72rem;font-weight:700;
+  color:var(--text2);min-width:54px;
+  text-align:left;direction:ltr;flex-shrink:0;
+}
+.t-body{flex:1;}
+.t-title{font-size:.85rem;font-weight:600;color:var(--text);line-height:1.4;}
+.t-dur{font-size:.68rem;color:var(--text2);margin-top:1px;}
+.t-note{
+  font-size:.68rem;color:#fb923c;margin-top:3px;
+  background:rgba(251,146,60,.1);border-radius:4px;
+  padding:2px 6px;display:inline-block;
+}
+.t-nap .t-title{color:#a5b4fc;}
+
+.cat-sleep    {color:var(--c-sleep);   background:var(--c-sleep);}
+.cat-prayer   {color:var(--c-prayer);  background:var(--c-prayer);}
+.cat-work     {color:var(--c-work);    background:var(--c-work);}
+.cat-quran    {color:var(--c-quran);   background:var(--c-quran);}
+.cat-exercise {color:var(--c-exercise);background:var(--c-exercise);}
+.cat-study    {color:var(--c-study);   background:var(--c-study);}
+.cat-family   {color:var(--c-family);  background:var(--c-family);}
+.cat-travel   {color:var(--c-travel);  background:var(--c-travel);}
+.cat-nap      {color:var(--c-nap);     background:var(--c-nap);}
+.cat-free     {color:var(--c-free);    background:var(--c-free);}
+.cat-hygiene  {color:var(--c-hygiene); background:var(--c-hygiene);}
+
+/* ─── NOTES ─── */
+.day-notes {
+  margin-top:14px;
+  background:rgba(245,158,11,.06);
+  border:1px solid rgba(245,158,11,.18);
+  border-right:3px solid #f59e0b;
+  border-radius:8px;padding:11px 13px;
+  font-size:.77rem;color:#fbbf24;line-height:1.7;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  text-align:center;padding:18px 16px;
+  font-size:.67rem;color:var(--text2);
+  border-top:1px solid var(--border);margin-top:8px;
+}
+
+/* ─── MOBILE ─── */
+@media(max-width:480px){
+  .poetry p{font-size:.85rem;}
+  .prayer-pill{min-width:62px;padding:5px 8px;}
+  .prayer-pill .pt{font-size:.82rem;}
+  .day-content{padding:12px;}
+  .t-title{font-size:.82rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🗓 جدولي الأسبوعي</h1>
+  <p class="subtitle">الرياض — أوقات الصلاة تتحدث تلقائياً كل شهر</p>
+  <div class="poetry">
+    <p>عَلى قَدرِ أَهلِ العَزمِ تَأتي العَزائِمُ<br>وَتَأتي عَلى قَدرِ الكِرامِ المَكارِمُ</p>
+    <div class="poet">— المتنبي</div>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="status-bar">
+  <span class="month-label" id="monthLabel">جاري التحميل…</span>
+  <span class="status-badge" id="statusBadge">⏳ جلب أوقات الصلاة…</span>
+</div>
+
+<!-- PRAYER BAR -->
+<div class="prayer-bar" id="prayerBar">
+  <div style="color:var(--text2);font-size:.8rem">جاري تحميل أوقات الصلاة…</div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:var(--c-prayer)"></div>صلاة</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-work)"></div>عمل</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-quran)"></div>قرآن</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-exercise)"></div>رياضة</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-study)"></div>دراسة</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-family)"></div>زوجة</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-nap)"></div>قيلولة</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-travel)"></div>تنقل</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-sleep)"></div>نوم</div>
+</div>
+
+<!-- TABS -->
+<div class="day-tabs">
+  <div class="day-tab active"  onclick="showDay('sun')">الأحد    <span class="badge">عمل + ⚽</span></div>
+  <div class="day-tab"         onclick="showDay('mon')">الاثنين  <span class="badge">عمل + 📖</span></div>
+  <div class="day-tab"         onclick="showDay('tue')">الثلاثاء <span class="badge">عمل</span></div>
+  <div class="day-tab"         onclick="showDay('wed')">الأربعاء <span class="badge">عمل</span></div>
+  <div class="day-tab"         onclick="showDay('thu')">الخميس   <span class="badge">راحة 💆</span></div>
+  <div class="day-tab"         onclick="showDay('fri')">الجمعة   <span class="badge">🕌 جمعة</span></div>
+  <div class="day-tab"         onclick="showDay('sat')">السبت    <span class="badge">إجازة</span></div>
+</div>
+
+<!-- CONTENT -->
+<div class="day-content active" id="day-sun"></div>
+<div class="day-content"        id="day-mon"></div>
+<div class="day-content"        id="day-tue"></div>
+<div class="day-content"        id="day-wed"></div>
+<div class="day-content"        id="day-thu"></div>
+<div class="day-content"        id="day-fri"></div>
+<div class="day-content"        id="day-sat"></div>
+
+<div class="footer" id="footer">
+  أوقات الصلاة وفق حساب أم القرى · الرياض · aladhan.com
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════ */
+const toMin  = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+const fromMin= n => { const h=Math.floor(n/60)%24,m=n%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; };
+const addMin = (t,n) => fromMin(toMin(t)+n);
+
+function to12h(t){
+  if(!t) return '—';
+  const [h,m]=t.split(':').map(Number);
+  const p=h>=12?'م':'ص', h12=h%12||12;
+  return `${h12}:${String(m).padStart(2,'0')} ${p}`;
+}
+
+/* ════════════════════════════════════════════
+   FETCH PRAYER TIMES (aladhan.com)
+════════════════════════════════════════════ */
+async function fetchPrayers(){
+  const now=new Date(), mo=now.getMonth()+1, yr=now.getFullYear();
+  const AR=['يناير','فبراير','مارس','أبريل','مايو','يونيو',
+            'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('monthLabel').textContent=`${AR[mo-1]} ${yr}`;
+
+  try{
+    const r=await fetch(
+      `https://api.aladhan.com/v1/calendarByCity?city=Riyadh&country=SA&method=4&month=${mo}&year=${yr}`
+    );
+    const d=await r.json();
+    if(d.code===200&&d.data){
+      const t=d.data[Math.min(14,d.data.length-1)].timings;
+      const p={
+        fajr:   t.Fajr.split(' ')[0],
+        sunrise:t.Sunrise.split(' ')[0],
+        dhuhr:  t.Dhuhr.split(' ')[0],
+        asr:    t.Asr.split(' ')[0],
+        maghrib:t.Maghrib.split(' ')[0],
+        isha:   t.Isha.split(' ')[0],
+      };
+      document.getElementById('statusBadge').textContent='✅ أوقات محدّثة (منتصف الشهر)';
+      document.getElementById('footer').textContent=
+        `أوقات الصلاة: ${AR[mo-1]} ${yr} · الرياض · حساب أم القرى · aladhan.com`;
+      return p;
+    }
+  }catch(e){console.warn('API error',e);}
+
+  document.getElementById('statusBadge').textContent='⚠️ بيانات احتياطية';
+  return{fajr:'03:31',sunrise:'05:03',dhuhr:'11:57',asr:'15:16',maghrib:'18:44',isha:'20:14'};
+}
+
+/* ════════════════════════════════════════════
+   PRAYER BAR
+════════════════════════════════════════════ */
+function renderPrayerBar(p){
+  const pills=[['الفجر',p.fajr],['الشروق',p.sunrise],['الظهر',p.dhuhr],
+               ['العصر',p.asr],['المغرب',p.maghrib],['العشاء',p.isha]];
+  document.getElementById('prayerBar').innerHTML=
+    pills.map(([n,t])=>`<div class="prayer-pill"><span class="pn">${n}</span><span class="pt">${to12h(t)}</span></div>`).join('')+
+    `<div class="prayer-src">⚙️ منتصف الشهر · أم القرى · الرياض</div>`;
+}
+
+/* ════════════════════════════════════════════
+   ITEM BUILDER
+════════════════════════════════════════════ */
+function item(t,title,dur,cat,note,cls=''){
+  return `
+  <div class="t-item ${cls}">
+    <div class="t-dot cat-${cat}"></div>
+    <div class="t-time">${to12h(t)}</div>
+    <div class="t-body">
+      <div class="t-title">${title}</div>
+      ${dur?`<div class="t-dur">⏱ ${dur}</div>`:''}
+      ${note?`<div class="t-note">⚠️ ${note}</div>`:''}
+    </div>
+  </div>`;
+}
+const tl = items => `<div class="timeline">${items.join('')}</div>`;
+
+/* ════════════════════════════════════════════
+   SCHEDULES
+════════════════════════════════════════════ */
+function build(p){
+
+  /* ── Shared computed anchors ── */
+  // ALL days: fixed wake time = Fajr - 17 min
+  const wake     = addMin(p.fajr,-17);
+  const fajrEnd  = addMin(p.fajr, 33);   // prayer + sunnah
+
+  // With calisthenics
+  const calsEnd  = addMin(fajrEnd, 50);
+  const shwrEnd  = addMin(calsEnd, 45);
+  const aqEnd    = addMin(shwrEnd, 30);
+  const snEnd    = addMin(aqEnd,   20);
+
+  // Without calisthenics (rest morning: broader free time + no cals)
+  const shwrEndNC= addMin(fajrEnd, 70);
+  const aqEndNC  = addMin(shwrEndNC,30);
+  const snEndNC  = addMin(aqEndNC, 20);
+
+  // Prayer-relative anchors
+  const dhuhrEnd = addMin(p.dhuhr, 30);
+  const lunchEnd = addMin(dhuhrEnd,30);
+  const asrEnd   = addMin(p.asr,   20);
+  const maghrEnd = addMin(p.maghrib,21);
+  const wifeEnd  = addMin(p.isha, -10);
+  const ishaEnd  = addMin(p.isha,  30);
+
+  /* ── AFTERNOON with nap (used by Sun/Mon/Tue) ──
+     Home at 4:30, nap 4:30–5:30, studies, free, Maghrib...        */
+  function afternoonWithNap(hasSharia=true, hasFikri=true){
+    const items=[];
+    items.push(item('16:00','🚗 العودة للمنزل + مراجعة القرآن (ترتيل)','30 دقيقة','travel'));
+    items.push(item('16:30','😴 قيلولة — تعويض النوم','60 دقيقة','nap','','t-nap'));
+    if(hasSharia) items.push(item('17:30','📚 دراسة العلوم الشرعية','30 دقيقة','study'));
+    if(hasFikri)  items.push(item('18:00','🧠 البناء الفكري','30 دقيقة','study'));
+    items.push(item('18:30','🕐 وقت حر / تحضير للمغرب',null,'free'));
+    return items;
+  }
+
+  /* ── AFTERNOON standard (no nap) ── */
+  function afternoonStd(hasSharia=true, hasFikri=true){
+    const items=[];
+    items.push(item('16:00','🚗 العودة للمنزل + مراجعة القرآن (ترتيل)','30 دقيقة','travel'));
+    items.push(item('16:30','😌 استراحة','30 دقيقة','free'));
+    if(hasSharia) items.push(item('17:00','📚 دراسة العلوم الشرعية','30 دقيقة','study'));
+    if(hasFikri)  items.push(item('17:30','🧠 البناء الفكري','30 دقيقة','study'));
+    items.push(item('18:00','🕐 وقت حر',null,'free'));
+    return items;
+  }
+
+  /* ── EVENING Maghrib → Isha → sleep ── */
+  function eveningMaghribIsha(wifeDur='~70 دقيقة', afterIsha=[]){
+    return [
+      item(p.maghrib,'🕌 صلاة المغرب في المسجد + السنة الراتبة','21 دقيقة','prayer'),
+      item(maghrEnd, `💑 وقت خاص مع الزوجة`,wifeDur,'family'),
+      item(wifeEnd,  '🕌 التوجه لصلاة العشاء',null,'prayer'),
+      item(p.isha,   '🕌 صلاة العشاء في المسجد + السنة الراتبة','30 دقيقة','prayer'),
+      ...afterIsha,
+    ];
+  }
+
+  /* ── WORK BLOCK (shared) ── */
+  function workBlock(){
+    return [
+      item('07:30','🚗 التنقل للعمل + حفظ القرآن (ترتيل)','30 دقيقة','travel'),
+      item('08:00','💼 العمل — مدير مشاريع','حتى الظهر','work'),
+      item(p.dhuhr,'🕌 صلاة الظهر في المسجد + السنة الراتبة','30 دقيقة','prayer'),
+      item(dhuhrEnd,'🍽 استراحة الغداء','30 دقيقة','free'),
+      item(lunchEnd,'💼 استمرار العمل',null,'work'),
+      item(p.asr,  '🕌 صلاة العصر في المسجد + السنة الراتبة','20 دقيقة','prayer'),
+      item(asrEnd, '💼 استمرار العمل','حتى 4:00 م','work'),
+    ];
+  }
+
+  /* ══════════ SUNDAY ══════════
+     No calisthenics · Nap before football · Fixed Fajr wake     */
+  const sunMorn=[
+    item(wake,              '😴 الاستيقاظ والتحضير للصلاة','17 دقيقة','sleep'),
+    item(p.fajr,            '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd,           '☕ إفطار خفيف واسترخاء — لا كالستنكس (يوم ⚽)','75 دقيقة','free'),
+    item(addMin(fajrEnd,75),'📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(addMin(fajrEnd,105),'📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(addMin(fajrEnd,125),'🕐 وقت حر / تحضير للعمل',null,'free'),
+  ];
+  const sunEve=[
+    ...eveningMaghribIsha('~50 دقيقة',[
+      item(ishaEnd,          '🚗 التوجه للملعب','20 دقيقة','exercise'),
+      item(addMin(ishaEnd,20),'⚽ تمرين كرة القدم','90 دقيقة','exercise'),
+      item(addMin(ishaEnd,110),'🚗 العودة من الملعب','20 دقيقة','travel'),
+      item(addMin(ishaEnd,130),'😴 النوم',
+           `~5 ساعات (الاثنين: نوم قصير — قيلولة بعد العمل تعوّض)`,'sleep',
+           'الفجر ثابت — استيقظ في وقته ولو نمت متأخراً'),
+    ]),
+  ];
+  const sun=[...sunMorn,...workBlock(),...afternoonWithNap(),...sunEve];
+
+  /* ══════════ MONDAY ══════════
+     Nap (compensates Sunday football) · Quran circle at night   */
+  const monMorn=[
+    item(wake,              '😴 الاستيقاظ (نوم قصير من ليلة الأحد — الفجر ثابت)','17 دقيقة','sleep',
+         'نمت متأخراً بسبب الكرة — الفجر ثابت · القيلولة بعد العمل تعوّض'),
+    item(p.fajr,            '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd,           '🏋️ تمارين الكالستنكس (بعد الفجر)','50 دقيقة','exercise'),
+    item(calsEnd,           '🚿 استحمام + إفطار','45 دقيقة','free'),
+    item(shwrEnd,           '📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(aqEnd,             '📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(snEnd,             '🕐 وقت حر / تحضير للعمل',null,'free'),
+  ];
+  const monEve=[
+    ...eveningMaghribIsha('~50 دقيقة',[
+      item(ishaEnd,           '🚗 التوجه لمجلس الاستهداء بالقرآن','15 دقيقة','travel'),
+      item(addMin(ishaEnd,15),'📖 مجلس الاستهداء بالقرآن مع الإخوة','~60 دقيقة','quran'),
+      item(addMin(ishaEnd,75),'🚗 العودة للمنزل','15 دقيقة','travel'),
+      item(addMin(ishaEnd,90),'😴 النوم',
+           `~5 ساعات (الثلاثاء: نوم قصير — قيلولة بعد العمل تعوّض)`,'sleep',
+           'اضبط المنبّه لصلاة الفجر'),
+    ]),
+  ];
+  const mon=[...monMorn,...workBlock(),...afternoonWithNap(),...monEve];
+
+  /* ══════════ TUESDAY ══════════
+     Nap (compensates Monday Quran circle) · Standard evening     */
+  const tueMorn=[
+    item(wake,    '😴 الاستيقاظ (نوم قصير من ليلة الاثنين — الفجر ثابت)','17 دقيقة','sleep',
+         'نمت متأخراً بسبب المجلس — الفجر ثابت · القيلولة بعد العمل تعوّض'),
+    item(p.fajr,  '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd, '🏋️ تمارين الكالستنكس (بعد الفجر)','50 دقيقة','exercise'),
+    item(calsEnd, '🚿 استحمام + إفطار','45 دقيقة','free'),
+    item(shwrEnd, '📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(aqEnd,   '📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(snEnd,   '🕐 وقت حر / تحضير للعمل',null,'free'),
+  ];
+  const tueEve=[
+    ...eveningMaghribIsha('~70 دقيقة',[
+      item(ishaEnd,              '🌙 وقت حر / استرخاء','35 دقيقة','free'),
+      item(addMin(ishaEnd,35),   '😴 النوم',`6 ساعات حتى ${to12h(wake)} ✅`,'sleep'),
+    ]),
+  ];
+  const tue=[...tueMorn,...workBlock(),...afternoonWithNap(),...tueEve];
+
+  /* ══════════ WEDNESDAY / STANDARD ══════════ */
+  function stdDay(){
+    const morn=[
+      item(wake,    '😴 الاستيقاظ والتحضير للصلاة','17 دقيقة','sleep'),
+      item(p.fajr,  '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+      item(fajrEnd, '🏋️ تمارين الكالستنكس (بعد الفجر مباشرة)','50 دقيقة','exercise'),
+      item(calsEnd, '🚿 استحمام + إفطار','45 دقيقة','free'),
+      item(shwrEnd, '📖 قراءة في العقيدة','30 دقيقة','study'),
+      item(aqEnd,   '📜 قراءة في السنة النبوية','20 دقيقة','study'),
+      item(snEnd,   '🕐 وقت حر / تحضير للعمل',null,'free'),
+    ];
+    const eve=[
+      ...eveningMaghribIsha('~70 دقيقة',[
+        item(ishaEnd,            '🌙 وقت حر / استرخاء','35 دقيقة','free'),
+        item(addMin(ishaEnd,35), '😴 النوم',`6 ساعات حتى ${to12h(wake)} ✅`,'sleep'),
+      ]),
+    ];
+    return [...morn,...workBlock(),...afternoonStd(),...eve];
+  }
+
+  /* ══════════ THURSDAY ══════════
+     No calisthenics · Rest morning · Standard evening            */
+  const thuMorn=[
+    item(wake,    '😴 الاستيقاظ والتحضير للصلاة','17 دقيقة','sleep'),
+    item(p.fajr,  '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd, '🧘 راحة وهدوء — لا كالستنكس (يوم الراحة الأسبوعية)','75 دقيقة','free'),
+    item(shwrEndNC,'📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(aqEndNC, '📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(snEndNC, '🕐 وقت حر / تحضير للعمل',null,'free'),
+  ];
+  const thuEve=[
+    ...eveningMaghribIsha('~70 دقيقة',[
+      item(ishaEnd,            '🌙 وقت حر / استرخاء تام','35 دقيقة','free'),
+      item(addMin(ishaEnd,35), '😴 النوم',`6 ساعات حتى ${to12h(wake)} ✅`,'sleep'),
+    ]),
+  ];
+  const thu=[...thuMorn,...workBlock(),...afternoonStd(),...thuEve];
+
+  /* ══════════ FRIDAY ══════════ */
+  const fri=[
+    item(wake,               '😴 الاستيقاظ والتحضير للصلاة','17 دقيقة','sleep'),
+    item(p.fajr,             '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd,            '🏋️ تمارين الكالستنكس (بعد الفجر)','50 دقيقة','exercise'),
+    item(calsEnd,            '🚿 النظافة الشخصية الأسبوعية + إفطار','75 دقيقة','hygiene'),
+    item(addMin(calsEnd,75), '📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(addMin(calsEnd,105),'📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(addMin(calsEnd,125),'📗 قراءة سورة الكهف + ورد القرآن','60 دقيقة','quran'),
+    item(addMin(calsEnd,185),'🕐 وقت حر / استراحة',null,'free'),
+    item('11:30',            '🕌 التوجه المبكر لصلاة الجمعة (خطبة + صلاة)','90 دقيقة','prayer'),
+    item('13:00',            '🍽 الغداء + وقت حر','60 دقيقة','free'),
+    item('14:00',            '👨‍👩 زيارة أهل الزوجة (محتملة) / وقت اجتماعي','حتى العصر','family'),
+    item(p.asr,              '🕌 صلاة العصر في المسجد + السنة الراتبة','20 دقيقة','prayer'),
+    item(asrEnd,             '🕐 وقت حر / عائلي','حتى المغرب','free'),
+    item(p.maghrib,          '🕌 صلاة المغرب في المسجد + السنة الراتبة','21 دقيقة','prayer'),
+    item(maghrEnd,           '🕐 وقت حر عائلي',null,'free'),
+    item(p.isha,             '🕌 صلاة العشاء في المسجد + السنة الراتبة','26 دقيقة','prayer'),
+    item(ishaEnd,            '🌙 استرخاء','35 دقيقة','free'),
+    item(addMin(ishaEnd,35), '😴 النوم','6 ساعات ✅','sleep'),
+  ];
+
+  /* ══════════ SATURDAY ══════════ */
+  const sat=[
+    item(wake,               '😴 الاستيقاظ والتحضير للصلاة','17 دقيقة','sleep'),
+    item(p.fajr,             '🕌 صلاة الفجر في المسجد + السنة الراتبة','33 دقيقة','prayer'),
+    item(fajrEnd,            '🏋️ تمارين الكالستنكس (بعد الفجر)','50 دقيقة','exercise'),
+    item(calsEnd,            '🚿 استحمام + إفطار مريح','45 دقيقة','free'),
+    item(shwrEnd,            '📖 قراءة في العقيدة','30 دقيقة','study'),
+    item(aqEnd,              '📜 قراءة في السنة النبوية','20 دقيقة','study'),
+    item(snEnd,              '🧠 البناء الفكري','30 دقيقة','study'),
+    item(addMin(snEnd,30),   '🕐 وقت حر / مشاريع / قراءة حرة','~5 ساعات','free'),
+    item(p.dhuhr,            '🕌 صلاة الظهر في المسجد + السنة الراتبة','30 دقيقة','prayer'),
+    item(dhuhrEnd,           '🍽 غداء + قيلولة / وقت حر','~3 ساعات','free'),
+    item(p.asr,              '🕌 صلاة العصر في المسجد + السنة الراتبة','20 دقيقة','prayer'),
+    item(asrEnd,             '🕐 وقت حر / عائلي / قراءة','حتى المغرب','free'),
+    item(p.maghrib,          '🕌 صلاة المغرب في المسجد + السنة الراتبة','21 دقيقة','prayer'),
+    item(maghrEnd,           '🕐 وقت حر عائلي',null,'free'),
+    item(p.isha,             '🕌 صلاة العشاء في المسجد + السنة الراتبة','26 دقيقة','prayer'),
+    item(ishaEnd,            '🌙 استرخاء / تحضير ليوم الأحد','35 دقيقة','free'),
+    item(addMin(ishaEnd,35), '😴 النوم','6 ساعات ✅','sleep'),
+  ];
+
+  return {
+    sun:{ items:sun,  note:'⚽ قيلولة 4:30–5:30م قبل الكرة (تعويض النوم المتأخر الليلة). الفجر ثابت كل الأيام.' },
+    mon:{ items:mon,  note:'😴 نمت قصيراً من ليلة الأحد (كرة قدم) — الفجر ثابت. قيلولة 4:30–5:30م تعوّض. ثم مجلس الاستهداء بعد العشاء.' },
+    tue:{ items:tue,  note:'😴 نمت قصيراً من ليلة الاثنين (مجلس الاستهداء) — الفجر ثابت. قيلولة 4:30–5:30م تعوّض. من الأربعاء النوم طبيعي.' },
+    wed:{ items:stdDay(), note:null },
+    thu:{ items:thu,  note:'💆 يوم الراحة من الكالستنكس — صباح هادئ ممتد. النوم كامل 6 ساعات.' },
+    fri:{ items:fri,  note:'🕌 لا دراسة شرعية ولا بناء فكري. الزيارة الاجتماعية محتملة الظهر.' },
+    sat:{ items:sat,  note:'🏖 لا دراسة شرعية. البناء الفكري في الصباح. يوم المشاريع والقراءة الحرة.' },
+  };
+}
+
+/* ════════════════════════════════════════════
+   RENDER + TABS
+════════════════════════════════════════════ */
+function renderAll(scheds){
+  for(const [id,data] of Object.entries(scheds)){
+    const el=document.getElementById(`day-${id}`);
+    el.innerHTML=tl(data.items)+(data.note?`<div class="day-notes">📋 ${data.note}</div>`:'');
+  }
+}
+
+function showDay(id){
+  const ids=['sun','mon','tue','wed','thu','fri','sat'];
+  document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',ids[i]===id));
+  document.querySelectorAll('.day-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(`day-${id}`).classList.add('active');
+}
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+(async()=>{
+  const prayers=await fetchPrayers();
+  renderPrayerBar(prayers);
+  renderAll(build(prayers));
+})();
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
